@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid( "2c50a5ca-81fc-417c-aee0-692c8ad97d19" )]
 
-[assembly: AssemblyVersion( "1.1.*" )]
-[assembly: AssemblyFileVersion( "1.1.0.0" )]
+[assembly: AssemblyVersion( "1.2.*" )]
+[assembly: AssemblyFileVersion( "1.2.0.0" )]
 
 [assembly: InternalsVisibleTo( "PING.Feature.SitecoreSettingsRedirector.Test" )]

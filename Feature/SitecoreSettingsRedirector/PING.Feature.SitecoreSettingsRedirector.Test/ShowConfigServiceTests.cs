@@ -29,8 +29,8 @@ namespace PING.Feature.SitecoreSettingsRedirector.Test
 			// not overridden setting
 			Assert.AreEqual( "test", GetAttribute( xml, "//sitecore/settings/setting[@name='stringSetting']", "value" ) );
 			// overridden setting
-			Assert.AreEqual( "app-value", GetAttribute( xml, "//sitecore/settings/setting[@name='overridenSetting']", "value" ) );
-			Assert.AreEqual( "Runtime Override", GetAttribute( xml, "//sitecore/settings/setting[@name='overridenSetting']", "source" ) );
+			Assert.AreEqual( "app-value", GetAttribute( xml, "//sitecore/settings/setting[@name='overridenStringSetting']", "value" ) );
+			Assert.AreEqual( "Runtime Override", GetAttribute( xml, "//sitecore/settings/setting[@name='overridenStringSetting']", "source" ) );
 		}
 
 		[TestMethod]
@@ -51,8 +51,8 @@ namespace PING.Feature.SitecoreSettingsRedirector.Test
 			// not overridden setting
 			Assert.AreEqual( "test", GetAttribute( xml, "//sitecore/settings/setting[@name='stringSetting']", "value" ) );
 			// overridden setting
-			Assert.AreEqual( "app-value", GetAttribute( xml, "//sitecore/settings/setting[@name='overridenSetting']", "value" ) );
-			Assert.AreEqual( "Runtime Override", GetAttribute( xml, "//sitecore/settings/setting[@name='overridenSetting']", "source" ) );
+			Assert.AreEqual( "app-value", GetAttribute( xml, "//sitecore/settings/setting[@name='overridenStringSetting']", "value" ) );
+			Assert.AreEqual( "Runtime Override", GetAttribute( xml, "//sitecore/settings/setting[@name='overridenStringSetting']", "source" ) );
 
 		}
 
