@@ -138,7 +138,7 @@ namespace PING.Feature.SitecoreSettingsRedirector.Services
 
 		private bool AppSettingExists( string name )
 		{
-			return ConfigurationManager.AppSettings.AllKeys.Contains( AppSettingsPrefix + name );
+			return ConfigurationManager.AppSettings.AllKeys.Any( key => key.Equals( AppSettingsPrefix + name, StringComparison.InvariantCultureIgnoreCase ) );
 		}
 	}
 }
