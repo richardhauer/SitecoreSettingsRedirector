@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OverrideXPath.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="OverrideServiceProviderBuilderTests.cs" />
     <Compile Include="OverridableSettingsTest.cs" />

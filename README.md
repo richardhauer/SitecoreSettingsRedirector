@@ -7,6 +7,10 @@ The intent of the module is to allow Azure Web Apps to manage all per-environmen
 It allows triage and support teams ready access to the settings that require management per-environment, and importantly, keeps 
 build artefacts immutable as they move from one environment to another.
 
+### Setup
+
+Open the Web.config in your Website folder and change the <section name="sitecore"> nodes type from "Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel" to "PING.Feature.SitecoreSettingsRedirector.Configuration.OverrideRuleBasedConfigReader, PING.Feature.SitecoreSettingsRedirector".
+
 ### Basic Use
 
     <sitecore>
