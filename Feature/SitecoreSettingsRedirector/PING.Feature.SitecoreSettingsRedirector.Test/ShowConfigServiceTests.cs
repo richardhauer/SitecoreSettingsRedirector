@@ -30,7 +30,7 @@ namespace PING.Feature.SitecoreSettingsRedirector.Test
 			Assert.AreEqual( "test", GetAttribute( xml, "//sitecore/settings/setting[@name='stringSetting']", "value" ) );
 			// overridden setting
 			Assert.AreEqual( "app-value", GetAttribute( xml, "//sitecore/settings/setting[@name='overridenStringSetting']", "value" ) );
-			Assert.AreEqual( "Runtime Override", GetAttribute( xml, "//sitecore/settings/setting[@name='overridenStringSetting']", "source" ) );
+			//Assert.AreEqual( "Runtime Override", GetAttribute( xml, "//sitecore/settings/setting[@name='overridenStringSetting']", "source" ) );
 		}
 
 		[TestMethod]

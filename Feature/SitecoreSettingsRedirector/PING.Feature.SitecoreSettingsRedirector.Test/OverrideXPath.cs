@@ -16,11 +16,11 @@ namespace PING.Feature.SitecoreSettingsRedirector.Test
         {
             var to1 = Factory.CreateObject("xpathtest/TestObject1", true) as TestObject;
             Assert.IsInstanceOfType(to1, typeof(TestObject));
-            Assert.AreEqual(to1.Property1, "prop1");
-            Assert.AreEqual(to1.Property2, "prop2");
-            Assert.AreEqual(to1.CtorProp1, "Constructor mapping");
-            Assert.AreEqual(to1.CtorProp2, "Sitecore.Data.DefaultDatabase, Sitecore.Kernel");
-            Assert.AreEqual(to1.To2.CtorProp1, "some1");
+            Assert.AreEqual("prop1", to1.Property1);
+            Assert.AreEqual("prop2", to1.Property2);
+            Assert.AreEqual("Constructor mapping", to1.CtorProp1);
+            Assert.AreEqual("Sitecore.Data.DefaultDatabase, Sitecore.Kernel", to1.CtorProp2);
+            Assert.AreEqual("some1", to1.To2.CtorProp1);
         }
 
         [TestMethod]
@@ -28,11 +28,11 @@ namespace PING.Feature.SitecoreSettingsRedirector.Test
         {
             var to3 = Factory.CreateObject("xpathtest/TestObject3", true) as TestObject;
             Assert.IsInstanceOfType(to3, typeof(TestObject));
-            Assert.AreEqual(to3.Property1, "prop1");
-            Assert.AreEqual(to3.Property2, "prop2");
-            Assert.AreEqual(to3.CtorProp1, "t8758t8");
-            Assert.AreEqual(to3.CtorProp2, "Sitecore.Data.DefaultDatabase, Sitecore.Kernel");
-            Assert.AreEqual(to3.To2.CtorProp1, "some1");
+            Assert.AreEqual("prop1", to3.Property1);
+            Assert.AreEqual("prop2", to3.Property2);
+            Assert.AreEqual("t8758t8", to3.CtorProp1);
+            Assert.AreEqual("Sitecore.Data.DefaultDatabase, Sitecore.Kernel", to3.CtorProp2);
+            Assert.AreEqual("0g08h08h", to3.To2.CtorProp1);
         }
 
 

@@ -1,7 +1,6 @@
 ﻿using Sitecore;
 using Sitecore.Configuration;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 using System.Xml;
@@ -14,55 +13,121 @@ namespace PING.Feature.SitecoreSettingsRedirector.Configuration
         {
             base.ReplaceEnvironmentVariables(rootNode);
 
-            ReplaceOverrideSettings(rootNode);
+            HandleSettingsOverride(rootNode);
+
+            HanldeXpathOverride(rootNode);
         }
 
-        private void ReplaceOverrideSettings(XmlNode rootNode)
+        const string SettingPrefixKey = "SitecoreSetting.";
+        const string XpathSettingPrefixKey = "SitecoreSetting.xPath.";
+
+
+        private void HandleSettingsOverride(XmlNode rootNode)
         {
             var overrideSettings = GetOverrideSettings();
 
             if (overrideSettings.Any())
             {
-                var settingCollection = new NameValueCollection();
+                var settingReplacements = new List<XpathReplacement>();
 
                 foreach (var os in overrideSettings)
                 {
                     var settingValue = ConfigurationManager.AppSettings[os];
-                    var settingKey = os.Replace("SitecoreSetting.", "");
-                    settingCollection[settingKey] = settingValue;
+                    var settingKey = os.Replace(SettingPrefixKey, "");
+                    var settingXPath = string.Format("/sitecore/settings/setting[@name=\"{0}\"]", settingKey);
+                    settingReplacements.Add(new XpathReplacement
+                    {
+                        Xpath = settingXPath,
+                        AttributenName = "value",
+                        NewValue = settingValue
+                    });
                 }
 
-                ReplaceOverrideSetting(rootNode, settingCollection);
+                ProcessReplacementsOnRootnode(rootNode, settingReplacements);
 
             }
-        }
-
-        private void ReplaceOverrideSetting(XmlNode rootNode, NameValueCollection settingCollection)
-        {
-            XmlNodeList settingsNodes = rootNode.SelectNodes("/sitecore/settings/setting");
-
-            for (int index = 0; index < settingsNodes.Count; index++)
-            {
-                var settingNode = settingsNodes[index];
-                var name = settingNode?.Attributes["name"]?.InnerText;
-                var match = settingCollection.AllKeys.FirstOrDefault(x => !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(x) && x.ToUpperInvariant() == name.ToUpperInvariant());
-                var overrideValue = settingCollection[match];
-                if (!string.IsNullOrEmpty(match) && !string.IsNullOrEmpty(overrideValue))
-                {
-                    settingNode.Attributes["value"].InnerText = overrideValue;
-                }
-            }
-
         }
 
         private IEnumerable<string> GetOverrideSettings()
         {
-            return ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith("SitecoreSetting.")); //todo make constants
+            return ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith(SettingPrefixKey));
+        }
+        private IEnumerable<string> GetOverrideXpathSettings()
+        {
+            return ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith(XpathSettingPrefixKey) && !x.EndsWith(".Value"));
         }
 
-        //private IEnumerable<string> GetOverrideNodeValue()
-        //{
-        //    return ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith("SitecoreNode."));
-        //}
+        private void HanldeXpathOverride(XmlNode rootNode)
+        {
+            var overrideXPathSettings = GetOverrideXpathSettings();
+
+            if (overrideXPathSettings.Any())
+            {
+                var settingXPathCollection = new List<XpathReplacement>();
+
+                foreach (var oxs in overrideXPathSettings)
+                {
+
+                    var xpathPath = ConfigurationManager.AppSettings[oxs];
+                    var rawXpathValue = ConfigurationManager.AppSettings[string.Format("{0}.Value", oxs)];  // xpath value all start with SitecoreSetting.xPath.[name].Value
+                    if (rawXpathValue.IndexOf(':') >= 0)
+                    {
+                        var splitArray = rawXpathValue.Split(':');
+                        if (splitArray.Count() == 2)
+                        {
+                            settingXPathCollection.Add(new XpathReplacement
+                            {
+                                Xpath = xpathPath,
+                                AttributenName = splitArray[0],
+                                NewValue = splitArray[1]
+                            });
+                        }
+                    }
+                    else
+                    {
+                        settingXPathCollection.Add(new XpathReplacement
+                        {
+                            Xpath = xpathPath,
+                            NewValue = rawXpathValue
+                        });
+                    }
+
+                }
+                ProcessReplacementsOnRootnode(rootNode, settingXPathCollection);
+
+            }
+        }
+
+
+        private void ProcessReplacementsOnRootnode(XmlNode rootNode, IEnumerable<XpathReplacement> replacements)
+        {
+            foreach (var replacement in replacements)
+            {
+                var nodeToChange = rootNode.SelectSingleNode(replacement.Xpath);
+                if (nodeToChange != null)
+                {
+                    if (string.IsNullOrEmpty(replacement.AttributenName))
+                    {
+                        nodeToChange.InnerText = replacement.NewValue;
+                    }
+                    else
+                    {
+                        if (nodeToChange.Attributes[replacement.AttributenName] != null)
+                        {
+                            nodeToChange.Attributes[replacement.AttributenName].InnerText = replacement.NewValue;
+                        }
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    public class XpathReplacement
+    {
+        public string Xpath { get; set; }
+        public string AttributenName { get; set; }
+        public string NewValue { get; set; }
     }
 }
