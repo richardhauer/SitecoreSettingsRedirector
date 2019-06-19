@@ -4,11 +4,17 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Xml;
+
 namespace PING.Feature.SitecoreSettingsRedirector.Configuration
 {
     [UsedImplicitly]
     public class OverrideRuleBasedConfigReader : RuleBasedConfigReader
     {
+        const string SettingPrefixKey = "SitecoreSetting.";
+        const string XpathSettingPrefixKey = "SitecoreSetting.xPath.";
+        const string XpathSettingEndWithKey = ".Value";
+        const string SitecoreSettingXpathTemplate = "/sitecore/settings/setting[@name=\"{0}\"]";
+
         protected override void ReplaceEnvironmentVariables(XmlNode rootNode)
         {
             base.ReplaceEnvironmentVariables(rootNode);
@@ -18,13 +24,9 @@ namespace PING.Feature.SitecoreSettingsRedirector.Configuration
             HanldeXpathOverride(rootNode);
         }
 
-        const string SettingPrefixKey = "SitecoreSetting.";
-        const string XpathSettingPrefixKey = "SitecoreSetting.xPath.";
-
-
         private void HandleSettingsOverride(XmlNode rootNode)
         {
-            var overrideSettings = GetOverrideSettings();
+            var overrideSettings = GetOverrideSettingsOnly();
 
             if (overrideSettings.Any())
             {
@@ -34,7 +36,7 @@ namespace PING.Feature.SitecoreSettingsRedirector.Configuration
                 {
                     var settingValue = ConfigurationManager.AppSettings[os];
                     var settingKey = os.Replace(SettingPrefixKey, "");
-                    var settingXPath = string.Format("/sitecore/settings/setting[@name=\"{0}\"]", settingKey);
+                    var settingXPath = string.Format(SitecoreSettingXpathTemplate, settingKey);
                     settingReplacements.Add(new XpathReplacement
                     {
                         Xpath = settingXPath,
@@ -42,24 +44,23 @@ namespace PING.Feature.SitecoreSettingsRedirector.Configuration
                         NewValue = settingValue
                     });
                 }
-
                 ProcessReplacementsOnRootnode(rootNode, settingReplacements);
-
             }
         }
 
-        private IEnumerable<string> GetOverrideSettings()
+        private IEnumerable<string> GetOverrideSettingsOnly()
         {
-            return ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith(SettingPrefixKey));
+            return ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith(SettingPrefixKey) && !x.StartsWith(XpathSettingPrefixKey));
         }
-        private IEnumerable<string> GetOverrideXpathSettings()
+
+        private IEnumerable<string> GetOverrideXpathSettingsOnly()
         {
-            return ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith(XpathSettingPrefixKey) && !x.EndsWith(".Value"));
+            return ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith(XpathSettingPrefixKey) && !x.EndsWith(XpathSettingEndWithKey));
         }
 
         private void HanldeXpathOverride(XmlNode rootNode)
         {
-            var overrideXPathSettings = GetOverrideXpathSettings();
+            var overrideXPathSettings = GetOverrideXpathSettingsOnly();
 
             if (overrideXPathSettings.Any())
             {
@@ -69,7 +70,7 @@ namespace PING.Feature.SitecoreSettingsRedirector.Configuration
                 {
 
                     var xpathPath = ConfigurationManager.AppSettings[oxs];
-                    var rawXpathValue = ConfigurationManager.AppSettings[string.Format("{0}.Value", oxs)];  // xpath value all start with SitecoreSetting.xPath.[name].Value
+                    var rawXpathValue = ConfigurationManager.AppSettings[oxs + XpathSettingEndWithKey];
                     if (rawXpathValue.IndexOf(':') >= 0)
                     {
                         var splitArray = rawXpathValue.Split(':');
