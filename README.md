@@ -1,33 +1,100 @@
 # PING.Feature.SitecoreSettingsRedirector
-A service that allows AppSettings to override Sitecore settings.
+A service that allows AppSettings to override any Sitecore configuration.
 
-The service also alters the `ShowConfig.aspx` page, setting the `patch:source` attribute to RuntimeOverride, to allow easy identification of the settings that are affected by the module.
+The intent of the module is to be used in Azure Web Apps to manage all per-environment settings. This reduces the burden of the Release pipeline to correctly configure and repackage config files.
 
-The intent of the module is to allow Azure Web Apps to manage all per-environment settings. This reduces the burden of the Release pipeline to correctly configure and repackage config files.
-It allows triage and support teams ready access to the settings that require management per-environment, and importantly, keeps 
-build artefacts immutable as they move from one environment to another.
+It allows triage and support teams ready access to the settings that require management per-environment, and importantly, keeps build artefacts immutable as they move from one environment to another.
 
 ### Setup
 
-Open the Web.config in your Website folder and change the <section name="sitecore"> nodes type from "Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel" to "PING.Feature.SitecoreSettingsRedirector.Configuration.OverrideRuleBasedConfigReader, PING.Feature.SitecoreSettingsRedirector".
+Drop PING.Feature.SitecoreSettingsRedirector.dll into your website bin folder
+
+Open the Web.config in your Website folder and change the 
+
+    <section name="sitecore">" 
+
+node's type from "Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel" to "PING.Feature.SitecoreSettingsRedirector.Configuration.OverrideRuleBasedConfigReader, PING.Feature.SitecoreSettingsRedirector". Afterwards it should look like below:
+
+    <configuration>
+      <configSections>
+        <section name="sitecore" type="PING.Feature.SitecoreSettingsRedirector.Configuration.OverrideRuleBasedConfigReader, PING.Feature.SitecoreSettingsRedirector"/>
+        ...
+      </configSections>
+      ...
+    </configuration>
 
 ### Basic Use
+
+In Azure AppSettings, or in the `web.config`, you can override this value as follows:
+
+#### Change Sitecore Settings
+
+Target on:
 
     <sitecore>
       <settings>
         <setting name="Analytics.Robots.IgnoreRobots" value="true" />
       </settings>
     </sitecore>
-
-In Azure AppSettings, or in the `web.config`, you can override this value as follows:
+    
+Setup:
 
     <configuration>
       <appSettings>
-        <add key="SitecoreSetting.Analytics.Robots.IgnoreRobots" value="false" />
+      	<add key="SitecoreSetting.Analytics.Robots.IgnoreRobots" value="false" />
       </appSettings>
     </configuration>
+   
+#### Change Sitecore Variables
 
+  Target on:
+  
+    <sitecore>
+        <sc.variable name="datafolder" value="somepath"/>
+    </sitecore>
+  
+  Setup:
+  
+    <configuration>
+        <appSettings>
+          <add key="SitecoreVariable.datafolder" value="new path value" />
+        </appSettings>
+      </configuration>
+    
+#### Add, Update, Remove any place in the xml configruation using xPath
 
+1. Add
+
+This adds a new xml node as the last child of the matching xPath selector node
+    
+    <configuration>
+      <appSettings>
+        <add key="SitecorePatch.TestAdd.xPath" value="/sitecore/settings"/>
+        <add key="SitecorePatch.TestAdd.Action" value="[add]&lt;setting name='patchAddValue' value='patchAddOverrideValue' /&gt;"/>
+      </appSettings>
+    </configuration>
+    
+2. Update
+
+This updates either the text value or attribute value of the node that matches the xPath selector
+
+Update text value:
+
+    <add key="SitecorePatch.TestUpdateText.xPath" value="/sitecore/xpathtest/TestObject3/param[1]"/>
+    <add key="SitecorePatch.TestUpdateText.Action" value="[update]text()=patchUpdatenOverrideValue"/>
+    
+Update attribute value:
+
+    <add key="SitecorePatch.TestUpdateAttribute.xPath" value="/sitecore/xpathtest/TestObject3/param[3]"/>
+    <add key="SitecorePatch.TestUpdateAttribute.Action" value="[update]@param1:patchUpdatenAttributeOverrideValue"/>
+
+3. Remove
+
+This will remove the node that matches the xPath selector
+
+    <add key="SitecorePatch.TestRemove.xPath" value="/sitecore/xpathtest/TestObject4/Property2"/>
+    <add key="SitecorePatch.TestRemove.Action" value="[remove]"/>
+    
 ### Advanced Use
 
 In Sitecore configuration, we are able to redirect the values of elements and properties using the special attribute `ref`.
