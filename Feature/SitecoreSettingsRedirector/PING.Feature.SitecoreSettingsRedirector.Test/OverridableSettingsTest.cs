@@ -1,81 +1,47 @@
-﻿using System;
-using System.Drawing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using PING.Feature.SitecoreSettingsRedirector.Services;
-using Sitecore.Abstractions;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace PING.Feature.SitecoreSettingsRedirector.Test
 {
-	[TestClass]
-	public class OverridableSettingsTest
-	{
-		private BaseLog Log;
-		private BaseFactory Factory;
+    [TestClass]
+    public class OverridableSettingsTest
+    {
 
-		[TestInitialize]
-		public void Setup()
-		{
-			var mockLog = new Mock<BaseLog>();
-			Log = mockLog.Object;
+        [TestMethod]
+        public void OverridableSettings_NonOverriddenSettings()
+        {
+            Assert.AreEqual(1, global::Sitecore.Configuration.Settings.GetIntSetting("intSetting", 0));
+            Assert.AreEqual(true, global::Sitecore.Configuration.Settings.GetBoolSetting("boolSetting", false));
+            Assert.AreEqual(5D, global::Sitecore.Configuration.Settings.GetDoubleSetting("doubleSetting", 0));
 
-			var mockFactory = new Mock<BaseFactory>();
-			Factory = mockFactory.Object;
-		}
+            Assert.AreEqual("test", global::Sitecore.Configuration.Settings.GetSetting("stringSetting"));
+            Assert.AreEqual("default", global::Sitecore.Configuration.Settings.GetSetting("not-a-setting", "default"));
+            Assert.AreEqual("", global::Sitecore.Configuration.Settings.GetSetting("also-not-a-setting"));
+        }
 
+        [TestMethod]
+        public void OverridableSettings_AppConfigOverriddenSettings_String()
+        {
+            Assert.AreEqual("app-value", global::Sitecore.Configuration.Settings.GetSetting("overridenStringSetting"));
+        }
 
-		[TestMethod]
-		public void OverridableSettings_Inheritance()
-		{
-			var svc = new OverridableSettings( Factory, Log );
+        [TestMethod]
+        public void OverridableSettings_AppConfigOverriddenSettings_Bool()
+        {
+            Assert.AreEqual(true, global::Sitecore.Configuration.Settings.GetBoolSetting("overridenBoolSetting", false));
+        }
 
-			Assert.IsInstanceOfType( svc, typeof( BaseSettings ) );
-		}
+        [TestMethod]
+        public void OverridableSettings_AppConfigOverriddenSettings_IntLongDouble()
+        {
+            Assert.AreEqual(11, global::Sitecore.Configuration.Settings.GetIntSetting("overridenIntSetting1", 0));
+            Assert.AreEqual(22 * 1024, global::Sitecore.Configuration.Settings.GetIntSetting("overridenIntSetting2", 0));
+            Assert.AreEqual(0, global::Sitecore.Configuration.Settings.GetIntSetting("overridenIntSetting3", 0));
 
-		[TestMethod]
-		public void OverridableSettings_NonOverriddenSettings()
-		{
-			// AppConfig has the settings configured
-			Assert.AreEqual( 1,			global::Sitecore.Configuration.Settings.GetIntSetting( "intSetting", 0 ) );
-			Assert.AreEqual( true,		global::Sitecore.Configuration.Settings.GetBoolSetting( "boolSetting", false ) );
-			Assert.AreEqual( 5D,		global::Sitecore.Configuration.Settings.GetDoubleSetting( "doubleSetting", 0 ) );
-			//Assert.AreEqual( TimeSpan.FromMinutes(5), global::Sitecore.Configuration.Settings.GetTimeSpanSetting( "timespanSetting", "0" ) );
+            Assert.AreEqual(11L, global::Sitecore.Configuration.Settings.GetLongSetting("overridenLongSetting1", 0));
+            Assert.AreEqual(22 * 1024L, global::Sitecore.Configuration.Settings.GetLongSetting("overridenLongSetting2", 0));
+            Assert.AreEqual(0, global::Sitecore.Configuration.Settings.GetLongSetting("overridenLongSetting3", 0));
 
-			Assert.AreEqual( "test",	global::Sitecore.Configuration.Settings.GetSetting( "stringSetting" ) );
-			Assert.AreEqual( "default",	global::Sitecore.Configuration.Settings.GetSetting( "not-a-setting", "default" ));
-			Assert.AreEqual( "",		global::Sitecore.Configuration.Settings.GetSetting( "also-not-a-setting" ) );
-		}
-
-		[TestMethod]
-		public void OverridableSettings_AppConfigOverriddenSettings_String()
-		{
-			Assert.AreEqual( "app-value",	global::Sitecore.Configuration.Settings.GetSetting( "overridenStringSetting" ) );
-		}
-
-		[TestMethod]
-		public void OverridableSettings_AppConfigOverriddenSettings_Bool()
-		{
-			Assert.AreEqual( true,			global::Sitecore.Configuration.Settings.GetBoolSetting( "overridenBoolSetting", false ) );
-		}
-
-		[TestMethod]
-		public void OverridableSettings_AppConfigOverriddenSettings_IntLongDouble()
-		{
-			Assert.AreEqual( 11,			global::Sitecore.Configuration.Settings.GetIntSetting( "overridenIntSetting1", 0 ) );
-			Assert.AreEqual( 22*1024,		global::Sitecore.Configuration.Settings.GetIntSetting( "overridenIntSetting2", 0 ) );
-			Assert.AreEqual( 0,				global::Sitecore.Configuration.Settings.GetIntSetting( "overridenIntSetting3", 0) ); 
-
-			Assert.AreEqual( 11L,			global::Sitecore.Configuration.Settings.GetLongSetting( "overridenLongSetting1", 0 ) );
-			Assert.AreEqual( 22*1024L,		global::Sitecore.Configuration.Settings.GetLongSetting( "overridenLongSetting2", 0 ) );
-			Assert.AreEqual( 0,			global::Sitecore.Configuration.Settings.GetLongSetting( "overridenLongSetting3", 0 ) );
-
-			Assert.AreEqual( 50D,			global::Sitecore.Configuration.Settings.GetDoubleSetting( "overridenDoubleSetting", 0 ) );
-		}
-
-		[TestMethod]
-		public void OverridableSettings_AppConfigOverriddenSettings_TimeSpan()
-		{
-			//Assert.AreEqual( TimeSpan.FromMinutes(30),	global::Sitecore.Configuration.Settings.GetTimeSpanSetting( "overridenTimespanSetting", "0" ) );
-		}
-	}
+            Assert.AreEqual(50D, global::Sitecore.Configuration.Settings.GetDoubleSetting("overridenDoubleSetting", 0));
+        }
+    }
 }

@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SitecoreSettingsRedirector"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PING.Feature.SitecoreSettingsRedirector", "Feature\SitecoreSettingsRedirector\PING.Feature.SitecoreSettingsRedirector\PING.Feature.SitecoreSettingsRedirector.csproj", "{2C50A5CA-81FC-417C-AEE0-692C8AD97D19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PING.Feature.SitecoreSettingsRedirector.Abstractions", "Feature\SitecoreSettingsRedirector\PING.Feature.SitecoreSettingsRedirector.Abstractions\PING.Feature.SitecoreSettingsRedirector.Abstractions.csproj", "{6472065C-E9CC-4FBD-A05E-F82066B5C2C9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PING.Feature.SitecoreSettingsRedirector.Test", "Feature\SitecoreSettingsRedirector\PING.Feature.SitecoreSettingsRedirector.Test\PING.Feature.SitecoreSettingsRedirector.Test.csproj", "{23524934-CBD4-4DE7-A295-C84619CBD332}"
 EndProject
 Global
@@ -30,10 +28,6 @@ Global
 		{2C50A5CA-81FC-417C-AEE0-692C8AD97D19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C50A5CA-81FC-417C-AEE0-692C8AD97D19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C50A5CA-81FC-417C-AEE0-692C8AD97D19}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6472065C-E9CC-4FBD-A05E-F82066B5C2C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6472065C-E9CC-4FBD-A05E-F82066B5C2C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6472065C-E9CC-4FBD-A05E-F82066B5C2C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6472065C-E9CC-4FBD-A05E-F82066B5C2C9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{23524934-CBD4-4DE7-A295-C84619CBD332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{23524934-CBD4-4DE7-A295-C84619CBD332}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23524934-CBD4-4DE7-A295-C84619CBD332}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -46,7 +40,6 @@ Global
 		{846EAE40-B352-4A7E-9148-3BB47075E220} = {4B0FCD1E-9D16-4A7C-A463-25EEEC353FDF}
 		{1542CF2D-008D-4466-8D7B-E569063E2441} = {846EAE40-B352-4A7E-9148-3BB47075E220}
 		{2C50A5CA-81FC-417C-AEE0-692C8AD97D19} = {1542CF2D-008D-4466-8D7B-E569063E2441}
-		{6472065C-E9CC-4FBD-A05E-F82066B5C2C9} = {1542CF2D-008D-4466-8D7B-E569063E2441}
 		{23524934-CBD4-4DE7-A295-C84619CBD332} = {1542CF2D-008D-4466-8D7B-E569063E2441}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

@@ -1,1 +1,0 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ShowConfig.aspx.cs" Inherits="PING.Feature.SitecoreSettingsRedirector.Sitecore.Admin.ShowConfig" %>

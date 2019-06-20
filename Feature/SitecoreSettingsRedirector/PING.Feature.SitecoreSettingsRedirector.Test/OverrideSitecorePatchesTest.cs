@@ -1,15 +1,10 @@
-﻿using System;
-using System.Drawing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using PING.Feature.SitecoreSettingsRedirector.Services;
-using Sitecore.Abstractions;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sitecore.Configuration;
 
 namespace PING.Feature.SitecoreSettingsRedirector.Test
 {
     [TestClass]
-    public class OverrideXPath
+    public class OverrideSitecorePatchesTest
     {
         [TestMethod]
         public void OverrideXPath_NormalObjectCreation()
@@ -21,18 +16,37 @@ namespace PING.Feature.SitecoreSettingsRedirector.Test
             Assert.AreEqual("Constructor mapping", to1.CtorProp1);
             Assert.AreEqual("Sitecore.Data.DefaultDatabase, Sitecore.Kernel", to1.CtorProp2);
             Assert.AreEqual("some1", to1.To2.CtorProp1);
+            Assert.AreEqual("something_123", to1.To2.CtorProp2);
         }
 
         [TestMethod]
-        public void OverrideXPath_OverrideObjectCreation()
+        public void OverrideXPath_AddAction()
+        {
+            Assert.AreEqual("patchAddOverrideValue", global::Sitecore.Configuration.Settings.GetSetting("patchAddValue"));
+        }
+
+        [TestMethod]
+        public void OverrideXPath_UpdateTextAction()
         {
             var to3 = Factory.CreateObject("xpathtest/TestObject3", true) as TestObject;
             Assert.IsInstanceOfType(to3, typeof(TestObject));
-            Assert.AreEqual("prop1", to3.Property1);
-            Assert.AreEqual("prop2", to3.Property2);
-            Assert.AreEqual("t8758t8", to3.CtorProp1);
-            Assert.AreEqual("Sitecore.Data.DefaultDatabase, Sitecore.Kernel", to3.CtorProp2);
-            Assert.AreEqual("0g08h08h", to3.To2.CtorProp1);
+            Assert.AreEqual("patchUpdatenOverrideValue", to3.CtorProp1);
+        }
+
+        [TestMethod]
+        public void OverrideXPath_UpdatAttributeAction()
+        {
+            var to3 = Factory.CreateObject("xpathtest/TestObject3", true) as TestObject;
+            Assert.IsInstanceOfType(to3, typeof(TestObject));
+            Assert.AreEqual("patchUpdatenAttributeOverrideValue", to3.To2.CtorProp1);
+        }
+
+        [TestMethod]
+        public void OverrideXPath_RemoveAction()
+        {
+            var to3 = Factory.CreateObject("xpathtest/TestObject3", true) as TestObject;
+            Assert.IsInstanceOfType(to3, typeof(TestObject));
+            Assert.AreEqual(null, to3.To2.Property2);
         }
 
 

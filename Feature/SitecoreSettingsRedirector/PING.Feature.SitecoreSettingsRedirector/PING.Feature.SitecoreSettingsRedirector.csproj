@@ -48,20 +48,6 @@
   <ItemGroup>
     <Compile Include="Configuration\OverrideRuleBasedConfigReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\OverridableSettings.cs" />
-    <Compile Include="Services\OverridableSitecoreServicesConfigurator.cs" />
-    <Compile Include="Services\OverrideServiceProviderBuilder.cs" />
-    <Compile Include="Services\ShowConfigService.cs" />
-    <Compile Include="Sitecore\admin\ShowConfig.aspx.cs">
-      <DependentUpon>ShowConfig.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PING.Feature.SitecoreSettingsRedirector.Abstractions\PING.Feature.SitecoreSettingsRedirector.Abstractions.csproj">
-      <Project>{6472065C-E9CC-4FBD-A05E-F82066B5C2C9}</Project>
-      <Name>PING.Feature.SitecoreSettingsRedirector.Abstractions</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Castle.Core">
@@ -88,10 +74,5 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Content Include="Sitecore\admin\ShowConfig.aspx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
