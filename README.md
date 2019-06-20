@@ -11,7 +11,7 @@ Drop PING.Feature.SitecoreSettingsRedirector.dll into your website bin folder
 
 Open the Web.config in your Website folder and change the 
 
-    <section name="sitecore">" 
+    <section name="sitecore">
 
 node's type from "Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel" to "PING.Feature.SitecoreSettingsRedirector.Configuration.OverrideRuleBasedConfigReader, PING.Feature.SitecoreSettingsRedirector". Afterwards it should look like below:
 
