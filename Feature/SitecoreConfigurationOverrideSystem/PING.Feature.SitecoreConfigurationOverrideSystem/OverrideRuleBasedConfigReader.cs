@@ -1,6 +1,7 @@
 ﻿using PING.Feature.SitecoreConfigurationOverrideSystem.Models;
 using Sitecore.Configuration;
 using Sitecore.Diagnostics;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Xml;
 
 namespace PING.Feature.SitecoreConfigurationOverrideSystem
 {
-    public class OverrideRuleBasedConfigReader : RuleBasedConfigReader
+    public class OverrideRuleBasedConfigReader : IConfigurationSectionHandler
     {
         private const string SettingPrefixKey = "SitecoreSetting.";
         private const string SitecoreSettingXpathTemplate = "/sitecore/settings/setting[@name='{0}']";
@@ -33,22 +34,54 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
         private const string RuntimeMarkerAttributeValue = "Runtime Override";
         private const string SitecoreBaseTypeAttributeName = "basetype";
 
-        protected override void ReplaceGlobalVariables(XmlNode rootNode)
+        public object Create(object parent, object configContext, XmlNode section)
         {
-            try
+            if (section.Name == RootSitecoreNodeName)
             {
-                if (rootNode.Name == RootSitecoreNodeName)
+                var sctypeStr = section.Attributes[SitecoreBaseTypeAttributeName]?.Value;
+                if (!string.IsNullOrEmpty(sctypeStr))
                 {
-                    ReplaceVariblesFromAppSettings(rootNode);
+                    var type = Type.GetType(sctypeStr);
+                    //var method = type.GetMethod("GetConfiguration");
+                    //var count = 0;
+                    //while (method == null && count <= 5)
+                    //{
+                    //    var parentType = type.BaseType;
+                    //    method = parentType.GetMethod("GetConfiguration");
+                    //    count++;
+                    //}
+
+                    //var doc = method.Invoke(null, null) as XmlDocument;
+
+                    ReplaceVariblesFromAppSettings(section);
+                    ReplaceSettingsFromAppSettings(section);
+                    ReplaceAnyValuesFromAppSettings(section);
+
+                    var scConfigReader = Activator.CreateInstance(type) as IConfigurationSectionHandler;
+                    var obj2 = scConfigReader.Create(parent, configContext, section);
+
+                    return obj2;
                 }
             }
-            catch (System.Exception ex)
-            {
-                Log.Warn("Error replacing variables, error message: {0}" + ex.Message, typeof(OverrideRuleBasedConfigReader));
-            }
-
-            base.ReplaceGlobalVariables(rootNode);
+            return null;
         }
+
+        //protected override void ReplaceGlobalVariables(XmlNode rootNode)
+        //{
+        //    try
+        //    {
+        //        if (rootNode.Name == RootSitecoreNodeName)
+        //        {
+        //            ReplaceVariblesFromAppSettings(rootNode);
+        //        }
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        Log.Warn("Error replacing variables, error message: {0}" + ex.Message, typeof(OverrideRuleBasedConfigReader));
+        //    }
+
+        //    base.ReplaceGlobalVariables(rootNode);
+        //}
 
         private void ReplaceVariblesFromAppSettings(XmlNode rootNode)
         {
@@ -64,23 +97,23 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
             return ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith(VariablePrefixKey));
         }
 
-        protected override void ReplaceEnvironmentVariables(XmlNode rootNode)
-        {
-            base.ReplaceEnvironmentVariables(rootNode);
+        //protected override void ReplaceEnvironmentVariables(XmlNode rootNode)
+        //{
+        //    base.ReplaceEnvironmentVariables(rootNode);
 
-            try
-            {
-                if (rootNode.Name == RootSitecoreNodeName)
-                {
-                    ReplaceSettingsFromAppSettings(rootNode);
-                    ReplaceAnyValuesFromAppSettings(rootNode);
-                }
-            }
-            catch (System.Exception ex)
-            {
-                Log.Warn("Error replacing settings or patches, error message: {0}" + ex.Message, typeof(OverrideRuleBasedConfigReader));
-            }
-        }
+        //    try
+        //    {
+        //        if (rootNode.Name == RootSitecoreNodeName)
+        //        {
+        //            ReplaceSettingsFromAppSettings(rootNode);
+        //            ReplaceAnyValuesFromAppSettings(rootNode);
+        //        }
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        Log.Warn("Error replacing settings or patches, error message: {0}" + ex.Message, typeof(OverrideRuleBasedConfigReader));
+        //    }
+        //}
 
         private void ReplaceSettingsFromAppSettings(XmlNode rootNode)
         {
