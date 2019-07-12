@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace PING.Feature.SitecoreSettingsRedirector.Test
+namespace PING.Feature.SitecoreConfigurationOverrideSystem.Test
 {
     [TestClass]
 	public class OverridableVariablesTest

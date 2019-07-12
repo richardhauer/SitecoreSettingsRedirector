@@ -1,38 +1,52 @@
-﻿using Sitecore;
+﻿using PING.Feature.SitecoreConfigurationOverrideSystem.Models;
 using Sitecore.Configuration;
+using Sitecore.Diagnostics;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Xml;
 
-namespace PING.Feature.SitecoreSettingsRedirector.Configuration
+namespace PING.Feature.SitecoreConfigurationOverrideSystem
 {
-    [UsedImplicitly]
     public class OverrideRuleBasedConfigReader : RuleBasedConfigReader
     {
-        const string SettingPrefixKey = "SitecoreSetting.";
-        const string SitecoreSettingXpathTemplate = "/sitecore/settings/setting[@name='{0}']";
+        private const string SettingPrefixKey = "SitecoreSetting.";
+        private const string SitecoreSettingXpathTemplate = "/sitecore/settings/setting[@name='{0}']";
 
-        const string VariablePrefixKey = "SitecoreVariable.";
-        const string SitecoreVariableXpathTemplate = "/sitecore/sc.variable[@name='{0}']";
+        private const string VariablePrefixKey = "SitecoreVariable.";
+        private const string SitecoreVariableXpathTemplate = "/sitecore/sc.variable[@name='{0}']";
 
-        const string PatchPrefixKey = "SitecorePatch.";
-        const string XpathSettingEndWithKey = ".xPath";
-        const string ActionSettingEndWithKey = ".Action";
+        private const string PatchPrefixKey = "SitecorePatch.";
+        private const string XpathSettingEndWithKey = ".xPath";
+        private const string ActionSettingEndWithKey = ".Action";
 
-        const string ActionPrefixAdd = "[add]";
-        const string ActionPrefixUpdatetext = "[update]text()=";
-        const string ActionPrefixUpdateAttribute = "[update]@";
-        const char ActionPrefixUpdateAttributeSpliter = ':';
-        const string ActionPrefixRemove = "[remove]";
+        private const string ActionPrefixAdd = "[add]";
+        private const string ActionPrefixUpdatetext = "[update]text()=";
+        private const string ActionPrefixUpdateAttribute = "[update]@";
+        private const char ActionPrefixUpdateAttributeSpliter = ':';
+        private const string ActionPrefixRemove = "[remove]";
 
-        #region Sc.Variables
+        private const string RootSitecoreNodeName = "sitecore";
+        private const string ValueAttributeName = "value";
+
+        private const string RuntimeMarkerAttributeName = "source";
+        private const string RuntimeMarkerAttributeValue = "Runtime Override";
+        private const string SitecoreBaseTypeAttributeName = "basetype";
+
         protected override void ReplaceGlobalVariables(XmlNode rootNode)
         {
-            if (rootNode.Name == "sitecore")
+            try
             {
-                ReplaceVariblesFromAppSettings(rootNode);
+                if (rootNode.Name == RootSitecoreNodeName)
+                {
+                    ReplaceVariblesFromAppSettings(rootNode);
+                }
             }
+            catch (System.Exception ex)
+            {
+                Log.Warn("Error replacing variables, error message: {0}" + ex.Message, typeof(OverrideRuleBasedConfigReader));
+            }
+
             base.ReplaceGlobalVariables(rootNode);
         }
 
@@ -49,15 +63,22 @@ namespace PING.Feature.SitecoreSettingsRedirector.Configuration
         {
             return ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith(VariablePrefixKey));
         }
-        #endregion
 
         protected override void ReplaceEnvironmentVariables(XmlNode rootNode)
         {
             base.ReplaceEnvironmentVariables(rootNode);
-            if (rootNode.Name == "sitecore")
+
+            try
             {
-                ReplaceSettingsFromAppSettings(rootNode);
-                ReplaceAnyValuesFromAppSettings(rootNode);
+                if (rootNode.Name == RootSitecoreNodeName)
+                {
+                    ReplaceSettingsFromAppSettings(rootNode);
+                    ReplaceAnyValuesFromAppSettings(rootNode);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Log.Warn("Error replacing settings or patches, error message: {0}" + ex.Message, typeof(OverrideRuleBasedConfigReader));
             }
         }
 
@@ -79,15 +100,12 @@ namespace PING.Feature.SitecoreSettingsRedirector.Configuration
 
             foreach (var os in overrideSettings)
             {
-                var settingValue = ConfigurationManager.AppSettings[os];
-                var settingKey = os.Replace(prefixKey, "");
-                var settingXPath = string.Format(xpathTemplate, settingKey);
                 settingReplacements.Add(new XpathReplacement
                 {
-                    Xpath = settingXPath,
+                    Xpath = string.Format(xpathTemplate, os.Replace(prefixKey, "")),
                     Action = XpathReplacement.ActionType.UpdateAttribute,
-                    AttributenName = "value",
-                    NewValue = settingValue
+                    AttributenName = ValueAttributeName,
+                    NewValue = ConfigurationManager.AppSettings[os]
                 });
             }
 
@@ -136,7 +154,10 @@ namespace PING.Feature.SitecoreSettingsRedirector.Configuration
                             newReplacement = ProcessRemoveAction(xpathPath);
                         }
 
-                        settingXPathCollection.Add(newReplacement);
+                        if (newReplacement.IsValid())
+                        {
+                            settingXPathCollection.Add(newReplacement);
+                        }
                     }
                 }
                 ProcessReplacements(rootNode, settingXPathCollection);
@@ -182,12 +203,11 @@ namespace PING.Feature.SitecoreSettingsRedirector.Configuration
         private static XpathReplacement ProcessAddAction(string xpathPath, string rawActionString)
         {
             XpathReplacement newReplacement;
-            var newNodeXml = rawActionString.Replace(ActionPrefixAdd, "");
             newReplacement = new XpathReplacement
             {
                 Xpath = xpathPath,
                 Action = XpathReplacement.ActionType.Add,
-                NewValue = newNodeXml
+                NewValue = rawActionString.Replace(ActionPrefixAdd, "")
             };
             return newReplacement;
         }
@@ -238,25 +258,9 @@ namespace PING.Feature.SitecoreSettingsRedirector.Configuration
         private void AddRuntimeMarker(XmlNode nodeToChange)
         {
             var mark = new XmlDocument();
-            var marker = mark.CreateAttribute("source");
-            marker.Value = "Runtime Override";
+            var marker = mark.CreateAttribute(RuntimeMarkerAttributeName);
+            marker.Value = RuntimeMarkerAttributeValue;
             nodeToChange.Attributes.SetNamedItem(marker);
-        }
-    }
-
-    public class XpathReplacement
-    {
-        public string Xpath { get; set; }
-        public ActionType Action { get; set; }
-        public string AttributenName { get; set; }
-        public string NewValue { get; set; }
-
-        public enum ActionType
-        {
-            Add,
-            UpdateText,
-            UpdateAttribute,
-            Remove
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
-namespace PING.Feature.SitecoreSettingsRedirector.Test
+namespace PING.Feature.SitecoreConfigurationOverrideSystem.Test
 {
     [TestClass]
     public class OverridableSettingsTest
@@ -12,6 +13,8 @@ namespace PING.Feature.SitecoreSettingsRedirector.Test
             Assert.AreEqual(1, global::Sitecore.Configuration.Settings.GetIntSetting("intSetting", 0));
             Assert.AreEqual(true, global::Sitecore.Configuration.Settings.GetBoolSetting("boolSetting", false));
             Assert.AreEqual(5D, global::Sitecore.Configuration.Settings.GetDoubleSetting("doubleSetting", 0));
+            //wont work without fakedb setup
+            //Assert.AreEqual(TimeSpan.FromMinutes(5), global::Sitecore.Configuration.Settings.GetTimeSpanSetting("timespanSetting", "0"));
 
             Assert.AreEqual("test", global::Sitecore.Configuration.Settings.GetSetting("stringSetting"));
             Assert.AreEqual("default", global::Sitecore.Configuration.Settings.GetSetting("not-a-setting", "default"));
@@ -43,5 +46,13 @@ namespace PING.Feature.SitecoreSettingsRedirector.Test
 
             Assert.AreEqual(50D, global::Sitecore.Configuration.Settings.GetDoubleSetting("overridenDoubleSetting", 0));
         }
+
+        //wont work without fakedb setup
+        //[TestMethod]
+        //public void OverridableSettings_AppConfigOverriddenSettings_TimeSpan()
+        //{
+        //    Assert.AreEqual(TimeSpan.FromMinutes(30), global::Sitecore.Configuration.Settings.GetTimeSpanSetting("overridenTimespanSetting", "0"));
+        //    Assert.AreEqual( TimeSpan.FromMinutes(30),    global::Sitecore.Configuration.Settings.GetTimeSpanSetting( "overridenTimespanSetting", "0" ) );
+        //}
     }
 }

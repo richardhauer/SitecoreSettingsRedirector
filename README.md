@@ -1,4 +1,4 @@
-# PING.Feature.SitecoreSettingsRedirector
+# PING.Feature.SitecoreConfigurationOverrideSystem
 A service that allows AppSettings to override any Sitecore configuration.
 
 The intent of the module is to be used in Azure Web Apps to manage all per-environment settings. This reduces the burden of the Release pipeline to correctly configure and repackage config files.
@@ -7,17 +7,17 @@ It allows triage and support teams ready access to the settings that require man
 
 ### Setup
 
-Drop PING.Feature.SitecoreSettingsRedirector.dll into your website bin folder
+Drop PING.Feature.SitecoreConfigurationOverrideSystem.dll into your website bin folder
 
 Open the Web.config in your Website folder and change the 
 
     <section name="sitecore">
 
-node's type from "Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel" to "PING.Feature.SitecoreSettingsRedirector.Configuration.OverrideRuleBasedConfigReader, PING.Feature.SitecoreSettingsRedirector". Afterwards it should look like below:
+node's type from "Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel" to "PING.Feature.SitecoreConfigurationOverrideSystem.Configuration.OverrideRuleBasedConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem". Afterwards it should look like below:
 
     <configuration>
       <configSections>
-        <section name="sitecore" type="PING.Feature.SitecoreSettingsRedirector.Configuration.OverrideRuleBasedConfigReader, PING.Feature.SitecoreSettingsRedirector"/>
+        <section name="sitecore" type="PING.Feature.SitecoreConfigurationOverrideSystem.Configuration.OverrideRuleBasedConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem"/>
         ...
       </configSections>
       ...

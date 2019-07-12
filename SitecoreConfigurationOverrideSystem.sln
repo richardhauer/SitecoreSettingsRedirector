@@ -12,11 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sitecore", "Sitecore", "{4B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Feature", "Feature", "{846EAE40-B352-4A7E-9148-3BB47075E220}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SitecoreSettingsRedirector", "SitecoreSettingsRedirector", "{1542CF2D-008D-4466-8D7B-E569063E2441}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SitecoreConfigurationOverrideSystem", "SitecoreConfigurationOverrideSystem", "{1542CF2D-008D-4466-8D7B-E569063E2441}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PING.Feature.SitecoreSettingsRedirector", "Feature\SitecoreSettingsRedirector\PING.Feature.SitecoreSettingsRedirector\PING.Feature.SitecoreSettingsRedirector.csproj", "{2C50A5CA-81FC-417C-AEE0-692C8AD97D19}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PING.Feature.SitecoreConfigurationOverrideSystem", "Feature\SitecoreConfigurationOverrideSystem\PING.Feature.SitecoreConfigurationOverrideSystem\PING.Feature.SitecoreConfigurationOverrideSystem.csproj", "{2C50A5CA-81FC-417C-AEE0-692C8AD97D19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PING.Feature.SitecoreSettingsRedirector.Test", "Feature\SitecoreSettingsRedirector\PING.Feature.SitecoreSettingsRedirector.Test\PING.Feature.SitecoreSettingsRedirector.Test.csproj", "{23524934-CBD4-4DE7-A295-C84619CBD332}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PING.Feature.SitecoreConfigurationOverrideSystem.Test", "Feature\SitecoreConfigurationOverrideSystem\PING.Feature.SitecoreConfigurationOverrideSystem.Test\PING.Feature.SitecoreConfigurationOverrideSystem.Test.csproj", "{23524934-CBD4-4DE7-A295-C84619CBD332}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

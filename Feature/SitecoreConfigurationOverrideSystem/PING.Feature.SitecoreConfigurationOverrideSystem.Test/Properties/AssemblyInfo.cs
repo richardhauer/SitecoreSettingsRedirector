@@ -2,12 +2,12 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle( "PING.Feature.SitecoreSettingsRedirector.Test" )]
+[assembly: AssemblyTitle("PING.Feature.SitecoreConfigurationOverrideSystem.Test")]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "" )]
-[assembly: AssemblyProduct( "PING.Feature.SitecoreSettingsRedirector.Test" )]
-[assembly: AssemblyCopyright( "Copyright ©  2018" )]
+[assembly: AssemblyProduct("PING.Feature.SitecoreConfigurationOverrideSystem.Test")]
+[assembly: AssemblyCopyright( "Copyright © 2019" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 

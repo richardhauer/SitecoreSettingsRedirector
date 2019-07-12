@@ -6,8 +6,8 @@
     <ProjectGuid>{23524934-CBD4-4DE7-A295-C84619CBD332}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PING.Feature.SitecoreSettingsRedirector.Test</RootNamespace>
-    <AssemblyName>PING.Feature.SitecoreSettingsRedirector.Test</AssemblyName>
+    <RootNamespace>PING.Feature.SitecoreConfigurationOverrideSystem.Test</RootNamespace>
+    <AssemblyName>PING.Feature.SitecoreConfigurationOverrideSystem.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -47,18 +47,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OverridableSettingsTest.cs" />
+    <Compile Include="HandleErrorsTest.cs" />
+    <Compile Include="TypeInheritanceTest.cs" />
     <Compile Include="OverrideSitecorePatchesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="OverridableVariablesTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PING.Feature.SitecoreSettingsRedirector\PING.Feature.SitecoreSettingsRedirector.csproj">
-      <Project>{2C50A5CA-81FC-417C-AEE0-692C8AD97D19}</Project>
-      <Name>PING.Feature.SitecoreSettingsRedirector</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config" />
+    <Content Include="App_Config\Include\zzz\Test.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Config\Sitecore.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lucene.Net">
@@ -88,6 +90,12 @@
     <PackageReference Include="Sitecore.Kernel">
       <Version>9.0.171002</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PING.Feature.SitecoreConfigurationOverrideSystem\PING.Feature.SitecoreConfigurationOverrideSystem.csproj">
+      <Project>{2c50a5ca-81fc-417c-aee0-692c8ad97d19}</Project>
+      <Name>PING.Feature.SitecoreConfigurationOverrideSystem</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sitecore.Configuration;
 
-namespace PING.Feature.SitecoreSettingsRedirector.Test
+namespace PING.Feature.SitecoreConfigurationOverrideSystem.Test
 {
     [TestClass]
     public class OverrideSitecorePatchesTest

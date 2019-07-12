@@ -7,8 +7,8 @@
     <ProjectGuid>{2C50A5CA-81FC-417C-AEE0-692C8AD97D19}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PING.Feature.SitecoreSettingsRedirector</RootNamespace>
-    <AssemblyName>PING.Feature.SitecoreSettingsRedirector</AssemblyName>
+    <RootNamespace>PING.Feature.SitecoreConfigurationOverrideSystem</RootNamespace>
+    <AssemblyName>PING.Feature.SitecoreConfigurationOverrideSystem</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -46,8 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\OverrideRuleBasedConfigReader.cs" />
+    <Compile Include="OverrideRuleBasedConfigReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\XpathReplacement.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Castle.Core">
