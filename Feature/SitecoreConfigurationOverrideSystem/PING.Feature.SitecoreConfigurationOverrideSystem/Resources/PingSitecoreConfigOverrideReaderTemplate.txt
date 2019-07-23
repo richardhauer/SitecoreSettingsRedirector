@@ -1,15 +1,13 @@
-﻿using PING.Feature.SitecoreConfigurationOverrideSystem.Models;
 using Sitecore.Configuration;
 using Sitecore.Diagnostics;
-using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Xml;
 
-namespace PING.Feature.SitecoreConfigurationOverrideSystem
+namespace $NameSpaceToken
 {
-    public class OverrideRuleBasedConfigReader : IConfigurationSectionHandler
+    public class $ClassNameToken : $BaseTypeToken
     {
         private const string SettingPrefixKey = "SitecoreSetting.";
         private const string SitecoreSettingXpathTemplate = "/sitecore/settings/setting[@name='{0}']";
@@ -32,58 +30,25 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
 
         private const string RuntimeMarkerAttributeName = "source";
         private const string RuntimeMarkerAttributeValue = "Runtime Override";
-        private const string SitecoreBaseTypeAttributeName = "basetype";
 
-        public object Create(object parent, object configContext, XmlNode section)
+        protected override void ReplaceGlobalVariables(XmlNode rootNode)
         {
-            if (section.Name == RootSitecoreNodeName)
+            try
             {
-                var sctypeStr = section.Attributes[SitecoreBaseTypeAttributeName]?.Value;
-                if (!string.IsNullOrEmpty(sctypeStr))
+                if (rootNode.Name == RootSitecoreNodeName)
                 {
-                    var type = Type.GetType(sctypeStr);
-                    //var method = type.GetMethod("GetConfiguration");
-                    //var count = 0;
-                    //while (method == null && count <= 5)
-                    //{
-                    //    var parentType = type.BaseType;
-                    //    method = parentType.GetMethod("GetConfiguration");
-                    //    count++;
-                    //}
-
-                    //var doc = method.Invoke(null, null) as XmlDocument;
-
-                    ReplaceVariblesFromAppSettings(section);
-                    ReplaceSettingsFromAppSettings(section);
-                    ReplaceAnyValuesFromAppSettings(section);
-
-                    var scConfigReader = Activator.CreateInstance(type) as IConfigurationSectionHandler;
-                    var obj2 = scConfigReader.Create(parent, configContext, section);
-
-                    return obj2;
+                    ReplaceVariblesFromAppSettings(rootNode);
                 }
             }
-            return null;
+            catch (System.Exception ex)
+            {
+                Log.Warn("Error replacing variables, error message: {0}" + ex.Message, this);
+            }
+
+            base.ReplaceGlobalVariables(rootNode);
         }
 
-        //protected override void ReplaceGlobalVariables(XmlNode rootNode)
-        //{
-        //    try
-        //    {
-        //        if (rootNode.Name == RootSitecoreNodeName)
-        //        {
-        //            ReplaceVariblesFromAppSettings(rootNode);
-        //        }
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //        Log.Warn("Error replacing variables, error message: {0}" + ex.Message, typeof(OverrideRuleBasedConfigReader));
-        //    }
-
-        //    base.ReplaceGlobalVariables(rootNode);
-        //}
-
-        private void ReplaceVariblesFromAppSettings(XmlNode rootNode)
+        public void ReplaceVariblesFromAppSettings(XmlNode rootNode)
         {
             var overrideVariables = GetRawSitecoreVariableConfigs();
             if (overrideVariables.Any())
@@ -97,25 +62,25 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
             return ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith(VariablePrefixKey));
         }
 
-        //protected override void ReplaceEnvironmentVariables(XmlNode rootNode)
-        //{
-        //    base.ReplaceEnvironmentVariables(rootNode);
+        protected override void ReplaceEnvironmentVariables(XmlNode rootNode)
+        {
+            base.ReplaceEnvironmentVariables(rootNode);
 
-        //    try
-        //    {
-        //        if (rootNode.Name == RootSitecoreNodeName)
-        //        {
-        //            ReplaceSettingsFromAppSettings(rootNode);
-        //            ReplaceAnyValuesFromAppSettings(rootNode);
-        //        }
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //        Log.Warn("Error replacing settings or patches, error message: {0}" + ex.Message, typeof(OverrideRuleBasedConfigReader));
-        //    }
-        //}
+            try
+            {
+                if (rootNode.Name == RootSitecoreNodeName)
+                {
+                    ReplaceSettingsFromAppSettings(rootNode);
+                    ReplaceAnyValuesFromAppSettings(rootNode);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Log.Warn("Error replacing settings or patches, error message: {0}" + ex.Message, this);
+            }
+        }
 
-        private void ReplaceSettingsFromAppSettings(XmlNode rootNode)
+        public void ReplaceSettingsFromAppSettings(XmlNode rootNode)
         {
             var overrideSettings = GetRawSitecoreSettingConfigs();
 
@@ -155,7 +120,7 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
             return ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith(PatchPrefixKey) && x.EndsWith(XpathSettingEndWithKey) && !x.EndsWith(ActionSettingEndWithKey));
         }
 
-        private void ReplaceAnyValuesFromAppSettings(XmlNode rootNode)
+        public void ReplaceAnyValuesFromAppSettings(XmlNode rootNode)
         {
             var overrideXPathSettings = GetRawSitecorePatchConfigs();
             var settingXPathCollection = new List<XpathReplacement>();
@@ -281,7 +246,7 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
         {
             var doc = new XmlDocument();
             doc.LoadXml(rawNewXml);
-            var newNode = nodeToChange.OwnerDocument?.ImportNode(doc.DocumentElement, true);
+            var newNode = nodeToChange.OwnerDocument.ImportNode(doc.DocumentElement, true);
             if (newNode != null)
             {
                 nodeToChange.AppendChild(newNode);
@@ -294,6 +259,41 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
             var marker = mark.CreateAttribute(RuntimeMarkerAttributeName);
             marker.Value = RuntimeMarkerAttributeValue;
             nodeToChange.Attributes.SetNamedItem(marker);
+        }
+    }
+
+    public class XpathReplacement
+    {
+        public string Xpath { get; set; }
+        public ActionType Action { get; set; }
+        public string AttributenName { get; set; }
+        public string NewValue { get; set; }
+
+        public enum ActionType
+        {
+            Add,
+            UpdateText,
+            UpdateAttribute,
+            Remove
+        }
+
+        public bool IsValid()
+        {
+            return !string.IsNullOrEmpty(Xpath)
+                    &&
+                    (
+                        (
+                            Action == ActionType.UpdateAttribute && !string.IsNullOrEmpty(AttributenName) && !string.IsNullOrEmpty(NewValue)
+                        )
+                        ||
+                        (
+                            Action == ActionType.UpdateText && !string.IsNullOrEmpty(NewValue)
+                        )
+                        ||
+                        (
+                            Action == ActionType.Add || Action == ActionType.Remove
+                        )
+                    );
         }
     }
 }

@@ -7,21 +7,60 @@ It allows triage and support teams ready access to the settings that require man
 
 ### Setup
 
-Drop PING.Feature.SitecoreConfigurationOverrideSystem.dll into your website bin folder
+1. Drop PING.Feature.SitecoreConfigurationOverrideSystem.dll into your website bin folder.
+2. Move value of "type" attribute of /configuration/configSections/section[name="sitecore"] in web.config to (new) "baseType" attribute of "Sitecore" nodex in the configuration.
+3. Setup the "type" attribute value to "PING.Feature.SitecoreConfigurationOverrideSystem.PingSitecoreConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem".
 
-Open the Web.config in your Website folder and change the 
 
-    <section name="sitecore">
+#### In Sitecore 9 and later
 
-node's type from "Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel" to "PING.Feature.SitecoreConfigurationOverrideSystem.Configuration.OverrideRuleBasedConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem". Afterwards it should look like below:
+Before:
 
-    <configuration>
+     <configuration>
       <configSections>
-        <section name="sitecore" type="PING.Feature.SitecoreConfigurationOverrideSystem.Configuration.OverrideRuleBasedConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem"/>
+        <section name="sitecore" type="Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel"/>
         ...
       </configSections>
+	  <sitecore />
       ...
     </configuration>
+
+After:
+
+     <configuration>
+      <configSections>
+        <section name="sitecore" type="PING.Feature.SitecoreConfigurationOverrideSystem.PingSitecoreConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem"/>
+        ...
+      </configSections>
+	  <sitecore baseType="Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel"/>
+      ...
+    </configuration>
+
+#### Before Sitecore 9
+
+Before:
+
+     <configuration>
+      <configSections>
+        <section name="sitecore" type="Sitecore.Configuration.ConfigReader, Sitecore.Kernel"/>
+        ...
+      </configSections>
+	  <sitecore />
+      ...
+    </configuration>
+
+After:
+
+     <configuration>
+      <configSections>
+        <section name="sitecore" type="PING.Feature.SitecoreConfigurationOverrideSystem.PingSitecoreConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem"/>
+        ...
+      </configSections>
+	  <sitecore baseType="Sitecore.Configuration.ConfigReader, Sitecore.Kernel"/>
+      ...
+    </configuration>
+
+If existing type of sitecore section node is any other types such as Sitecore Support types, it should be moved over to baseType on sitecore node similar to above.
 
 ### Basic Use
 
