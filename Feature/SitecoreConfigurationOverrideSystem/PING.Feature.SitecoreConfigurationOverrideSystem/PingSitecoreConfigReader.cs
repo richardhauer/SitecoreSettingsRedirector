@@ -40,10 +40,13 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
 
                 if (result.Errors.Count > 0)
                 {
-                    foreach (var error in result.Errors)
+                    var errorMessage = "";
+                    foreach (CompilerError error in result.Errors)
                     {
+                        errorMessage += error.ErrorText;
                     }
-                    throw new Exception("Error while compiling PING.Feature.SitecoreConfigurationOverrideSystemMirrorDimension.PingSitecoreConfigReader");
+
+                    throw new Exception("Error while compiling PingSitecoreConfigReader: " + errorMessage);
                 }
 
                 ret = result.CompiledAssembly.GetType(string.Format("{0}.{1}", nameSpace, className));
