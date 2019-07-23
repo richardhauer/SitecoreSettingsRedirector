@@ -8,7 +8,7 @@ It allows triage and support teams ready access to the settings that require man
 ### Setup
 
 1. Drop PING.Feature.SitecoreConfigurationOverrideSystem.dll into your website bin folder.
-2. Move value of "type" attribute of /configuration/configSections/section[name="sitecore"] in web.config to (new) "baseType" attribute of "Sitecore" nodex in the configuration.
+2. Move value of "type" attribute of /configuration/configSections/section[name="sitecore"] in web.config to (new) "configReaderBaseType" attribute of "Sitecore" nodex in the configuration.
 3. Setup the "type" attribute value to "PING.Feature.SitecoreConfigurationOverrideSystem.PingSitecoreConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem".
 
 
@@ -32,7 +32,7 @@ After:
         <section name="sitecore" type="PING.Feature.SitecoreConfigurationOverrideSystem.PingSitecoreConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem"/>
         ...
       </configSections>
-	  <sitecore baseType="Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel"/>
+	  <sitecore configReaderBaseType="Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel"/>
       ...
     </configuration>
 
@@ -56,11 +56,11 @@ After:
         <section name="sitecore" type="PING.Feature.SitecoreConfigurationOverrideSystem.PingSitecoreConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem"/>
         ...
       </configSections>
-	  <sitecore baseType="Sitecore.Configuration.ConfigReader, Sitecore.Kernel"/>
+	  <sitecore configReaderBaseType="Sitecore.Configuration.ConfigReader, Sitecore.Kernel"/>
       ...
     </configuration>
 
-If existing type of sitecore section node is any other types such as Sitecore Support types, it should be moved over to baseType on sitecore node similar to above.
+If existing type of sitecore section node is any other types such as Sitecore Support types, it should be moved over to configReaderBaseType on sitecore node similar to above.
 
 ### Basic Use
 

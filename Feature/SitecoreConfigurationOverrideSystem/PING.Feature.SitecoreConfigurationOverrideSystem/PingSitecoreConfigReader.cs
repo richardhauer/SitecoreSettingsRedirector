@@ -11,15 +11,16 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
     {
         private IConfigurationSectionHandler BaseConfig;
 
-        private IConfigurationSectionHandler CreateDynamicConfigReader(Type baseType) => Activator.CreateInstance(MyTypeFromAssembly(baseType)) as IConfigurationSectionHandler;
+        private IConfigurationSectionHandler CreateDynamicConfigReader(Type configReaderBaseType) => Activator.CreateInstance(MyTypeFromAssembly(configReaderBaseType)) as IConfigurationSectionHandler;
 
-        private Type MyTypeFromAssembly(Type baseType)
+        private Type MyTypeFromAssembly(Type configReaderBaseType)
         {
-            var baseTypeName = baseType.FullName;
+            var configReaderBaseTypeName = configReaderBaseType.FullName;
             var className = "PingSitecoreConfigReader";
             var nameSpace = "PING.Feature.SitecoreConfigurationOverrideSystemMirrorDimension";
 
             Type ret = null;
+
 
             using (var cp = CodeDomProvider.CreateProvider("CSharp"))
             {
@@ -30,12 +31,20 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
                 parameters.ReferencedAssemblies.Add("System.dll");
                 parameters.ReferencedAssemblies.Add("System.Core.dll");
                 parameters.ReferencedAssemblies.Add("System.Configuration.dll");
-                parameters.ReferencedAssemblies.Add(Path.GetFileName(baseType.Assembly.Location));
+                parameters.ReferencedAssemblies.Add(configReaderBaseType.Assembly.Location);
 
-                var fileContent = Properties.Resources.PingSitecoreConfigOverrideReaderTemplate.Replace("$BaseTypeToken", baseTypeName).Replace("$ClassNameToken", className).Replace("$NameSpaceToken", nameSpace);
+                var fileContent = Properties.Resources.PingSitecoreConfigOverrideReaderTemplate.Replace("$BaseTypeToken", configReaderBaseTypeName).Replace("$ClassNameToken", className).Replace("$NameSpaceToken", nameSpace);
                 char[] seperators = { '\n', '\r', '\t' };
                 string[] code = fileContent.Split(seperators, StringSplitOptions.RemoveEmptyEntries);
                 var result = cp.CompileAssemblyFromSource(parameters, string.Join("", code));
+
+                if (result.Errors.Count > 0)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                    }
+                    throw new Exception("Error while compiling PING.Feature.SitecoreConfigurationOverrideSystemMirrorDimension.PingSitecoreConfigReader");
+                }
 
                 ret = result.CompiledAssembly.GetType(string.Format("{0}.{1}", nameSpace, className));
             }
@@ -45,34 +54,34 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
 
         public object Create(object parent, object configContext, XmlNode section)
         {
-            Type baseType = Type.GetType(((XmlElement)section)?.GetAttribute("baseType"));
+            Type configReaderBaseType = Type.GetType(((XmlElement)section)?.GetAttribute("configReaderBaseType"));
 
-            ValidateBaseType(baseType);
+            ValidateBaseType(configReaderBaseType);
 
-            BaseConfig = CreateDynamicConfigReader(baseType);
+            BaseConfig = CreateDynamicConfigReader(configReaderBaseType);
 
             return BaseConfig.Create(parent, configContext, section);
         }
 
-        private void ValidateBaseType(Type baseType)
+        private void ValidateBaseType(Type configReaderBaseType)
         {
-            if (baseType == null)
+            if (configReaderBaseType == null)
             {
-                throw new Exception("Please ensure baseType on Sitecore node is defined correctly.");
+                throw new Exception("Please ensure configReaderBaseType on Sitecore node is defined correctly.");
             }
-            if (baseType.GetInterface(typeof(IConfigurationSectionHandler).FullName) == null)
+            if (configReaderBaseType.GetInterface(typeof(IConfigurationSectionHandler).FullName) == null)
             {
-                throw new Exception("Please ensure baseType implements System.Configuration.IConfigurationSectionHandler interface.");
+                throw new Exception("Please ensure configReaderBaseType implements System.Configuration.IConfigurationSectionHandler interface.");
             }
-            if (GetMethod(baseType, "ReplaceEnvironmentVariables") == null || GetMethod(baseType, "ReplaceGlobalVariables") == null)
+            if (GetMethod(configReaderBaseType, "ReplaceEnvironmentVariables") == null || GetMethod(configReaderBaseType, "ReplaceGlobalVariables") == null)
             {
-                throw new Exception("Please ensure baseType has overrideable ReplaceEnvironmentVariables and ReplaceGlobalVariables methods.");
+                throw new Exception("Please ensure configReaderBaseType has overrideable ReplaceEnvironmentVariables and ReplaceGlobalVariables methods.");
             }
         }
 
-        private MethodInfo GetMethod(Type baseType, string methodName)
+        private MethodInfo GetMethod(Type configReaderBaseType, string methodName)
         {
-            return baseType.GetMethod(methodName, BindingFlags.FlattenHierarchy | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(XmlNode) }, null);
+            return configReaderBaseType.GetMethod(methodName, BindingFlags.FlattenHierarchy | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(XmlNode) }, null);
         }
     }
 }
