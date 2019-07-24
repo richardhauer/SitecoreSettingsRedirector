@@ -1,4 +1,5 @@
-# PING.Feature.SitecoreConfigurationOverrideSystem
+# PING Works - Sitecore Configuration Override System
+
 A service that allows AppSettings to override any Sitecore configuration.
 
 The intent of the module is to be used in Azure Web Apps to manage all per-environment settings. This reduces the burden of the Release pipeline to correctly configure and repackage config files.
@@ -60,7 +61,7 @@ After:
       ...
     </configuration>
 
-If existing type of sitecore section node is any other types such as Sitecore Support types, it should be moved over to configReaderBaseType on sitecore node similar to above.
+If existing type of sitecore section node is any other types such as Sitecore Support types, it should be moved over to configReaderBaseType on sitecore node just the same as above.
 
 ### Basic Use
 
@@ -134,6 +135,15 @@ This will remove the node that matches the xPath selector
     <add key="SitecorePatch.TestRemove.xPath" value="/sitecore/xpathtest/TestObject4/Property2"/>
     <add key="SitecorePatch.TestRemove.Action" value="[remove]"/>
     
+### Tips
+
+In /sitecore/admin/showconfig.aspx, all settings that are being overwritten are marked with source="Runtime Override" attribute in the xml node. For example:
+
+	<sitecore xmlns:patch="http://www.sitecore.net/xmlconfig/" database="SqlServer" configReaderBaseType="Sitecore.Configuration.ConfigReader, Sitecore.Kernel">
+		<sc.variable name="dataFolder" patch:source="zzDataFolder.config" value="D:\home\site\wwwroot\App_Data"/>
+		<sc.variable name="mediaFolder" value="/upload"/>
+		<sc.variable name="tempFolder" value="/overridevaluehere" source="Runtime Override"/>
+
 ### Advanced Use
 
 In Sitecore configuration, we are able to redirect the values of elements and properties using the special attribute `ref`.
