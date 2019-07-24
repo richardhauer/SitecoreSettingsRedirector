@@ -4,6 +4,8 @@ using System.Configuration;
 using System.IO;
 using System.Reflection;
 using System.Xml;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace PING.Feature.SitecoreConfigurationOverrideSystem
 {
@@ -26,12 +28,7 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
             {
                 CompilerParameters parameters = new CompilerParameters();
                 parameters.GenerateInMemory = true;
-
-                parameters.ReferencedAssemblies.Add("System.Xml.dll");
-                parameters.ReferencedAssemblies.Add("System.dll");
-                parameters.ReferencedAssemblies.Add("System.Core.dll");
-                parameters.ReferencedAssemblies.Add("System.Configuration.dll");
-                parameters.ReferencedAssemblies.Add(configReaderBaseType.Assembly.Location);
+                parameters.ReferencedAssemblies.AddRange(GatherReferences(configReaderBaseType));
 
                 var fileContent = Properties.Resources.PingSitecoreConfigOverrideReaderTemplate.Replace("$BaseTypeToken", configReaderBaseTypeName).Replace("$ClassNameToken", className).Replace("$NameSpaceToken", nameSpace);
                 char[] seperators = { '\n', '\r', '\t' };
@@ -53,6 +50,55 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
             }
 
             return ret;
+        }
+
+        private string[] GatherReferences(Type configReaderBaseType)
+        {
+            var knownReferences = new[] { "System.Xml.dll", "System.dll", "System.Core.dll", "System.Configuration.dll" };
+
+            var baseExistingRefs = configReaderBaseType.Assembly.GetReferencedAssemblies().Select(x => x.FullName).ToArray();
+            var rawAssemblyList = ExtractDllLocations(baseExistingRefs).ToList();
+            rawAssemblyList.AddRange(ExtractDllLocations(knownReferences));
+            rawAssemblyList.Add(configReaderBaseType.Assembly.Location);
+
+            return CleanUpAssemblyList(rawAssemblyList);
+        }
+
+        private string[] CleanUpAssemblyList(IEnumerable<string> assemList)
+        {
+            var result = new List<string>();
+
+            foreach (var al in assemList)
+            {
+                if (!result.Any(x => x.ToUpperInvariant() == al.ToUpperInvariant()) && !result.Any(x => new FileInfo(x).Name == new FileInfo(al).Name))
+                {
+                    result.Add(al);
+                }
+            }
+            return result.ToArray();
+        }
+
+        private IEnumerable<string> ExtractDllLocations(string[] dllNames)
+        {
+            var assemList = new List<string>();
+            foreach (var ed in dllNames)
+            {
+                var al = "";
+                try
+                {
+                    al = Assembly.ReflectionOnlyLoad(ed)?.Location;
+                }
+                catch (Exception)
+                {
+                    //ignore not found dlls
+                }
+
+                if (!string.IsNullOrEmpty(al) && File.Exists(al))
+                {
+                    assemList.Add(al);
+                }
+            }
+            return assemList;
         }
 
         public object Create(object parent, object configContext, XmlNode section)
