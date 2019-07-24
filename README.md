@@ -8,12 +8,12 @@ It allows triage and support teams ready access to the settings that require man
 
 ### Setup
 
-1. Drop PING.Feature.SitecoreConfigurationOverrideSystem.dll into your website bin folder.
-2. Move value of "type" attribute of /configuration/configSections/section[name="sitecore"] in web.config to (new) "configReaderBaseType" attribute of "Sitecore" nodex in the configuration.
-3. Setup the "type" attribute value to "PING.Feature.SitecoreConfigurationOverrideSystem.PingSitecoreConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem".
+1. Drop PING.Feature.SitecoreConfigurationOverrideSystem.dll into website bin folder.
+2. Move the value of "type" attribute of /configuration/configSections/section[name="sitecore"] in web.config to (new) "configReaderBaseType" attribute of "Sitecore" node in the configuration (Likely Sitecore.config under App_Config folder).
+3. Setup the "type" attribute value to "PING.Feature.SitecoreConfigurationOverrideSystem.PingSitecoreConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem" on node /configuration/configSections/section[name="sitecore"] in web.config .
 
 
-#### In Sitecore 9 and later
+#### Example In Sitecore 9 and later
 
 Before:
 
@@ -37,7 +37,7 @@ After:
       ...
     </configuration>
 
-#### Before Sitecore 9
+#### Example Before Sitecore 9
 
 Before:
 
@@ -63,7 +63,7 @@ After:
 
 If existing type of sitecore section node is any other types such as Sitecore Support types, it should be moved over to configReaderBaseType on sitecore node just the same as above.
 
-### Basic Use
+### Basic Usage
 
 In Azure AppSettings, or in the `web.config`, you can override this value as follows:
 
@@ -143,8 +143,10 @@ In /sitecore/admin/showconfig.aspx, all settings that are being overwritten are 
 		<sc.variable name="dataFolder" patch:source="zzDataFolder.config" value="D:\home\site\wwwroot\App_Data"/>
 		<sc.variable name="mediaFolder" value="/upload"/>
 		<sc.variable name="tempFolder" value="/overridevaluehere" source="Runtime Override"/>
+		...
+	</sitecore>
 
-### Advanced Use
+### Advanced Usage
 
 In Sitecore configuration, we are able to redirect the values of elements and properties using the special attribute `ref`.
 This allows us to redirect objects and properties that aren't usually found in Sitecore Settings.  This is particularly useful
