@@ -223,7 +223,7 @@ namespace $NameSpaceToken
                             ProcessReplacementAdd(replacement.NewValue, nodeToChange);
                             break;
                         case XpathReplacement.ActionType.UpdateText:
-                            nodeToChange.InnerText = replacement.NewValue;
+                            nodeToChange.InnerXml = replacement.NewValue;
                             break;
                         case XpathReplacement.ActionType.UpdateAttribute:
                             if (nodeToChange.Attributes[replacement.AttributenName] != null)
