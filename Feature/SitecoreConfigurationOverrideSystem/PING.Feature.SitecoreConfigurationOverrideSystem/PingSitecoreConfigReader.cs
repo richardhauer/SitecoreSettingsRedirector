@@ -1,11 +1,11 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace PING.Feature.SitecoreConfigurationOverrideSystem
 {
@@ -22,41 +22,42 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
             var nameSpace = "PING.Feature.SitecoreConfigurationOverrideSystemMirrorDimension";
 
             Type ret = null;
-
-
             using (var cp = CodeDomProvider.CreateProvider("CSharp"))
             {
-                CompilerParameters parameters = new CompilerParameters();
-                parameters.GenerateInMemory = true;
+                var parameters = new CompilerParameters
+                {
+                    GenerateInMemory = true
+                };
                 parameters.ReferencedAssemblies.AddRange(GatherReferences(configReaderBaseType));
 
-                var fileContent = Properties.Resources.PingSitecoreConfigOverrideReaderTemplate.Replace("$BaseTypeToken", configReaderBaseTypeName).Replace("$ClassNameToken", className).Replace("$NameSpaceToken", nameSpace);
+                var fileContent = Properties.Resources.PingSitecoreConfigOverrideReaderTemplate.
+                                    Replace("$BaseTypeToken", configReaderBaseTypeName).
+                                    Replace("$ClassNameToken", className).
+                                    Replace("$NameSpaceToken", nameSpace);
                 char[] seperators = { '\n', '\r', '\t' };
-                string[] code = fileContent.Split(seperators, StringSplitOptions.RemoveEmptyEntries);
+                var code = fileContent.Split(seperators, StringSplitOptions.RemoveEmptyEntries);
                 var result = cp.CompileAssemblyFromSource(parameters, string.Join("", code));
 
-                if (result.Errors.Count > 0)
-                {
-                    var errorMessage = "";
-                    foreach (CompilerError error in result.Errors)
-                    {
-                        errorMessage += error.ErrorText;
-                    }
-
-                    throw new Exception("Error while compiling PingSitecoreConfigReader: " + errorMessage);
-                }
+                ThrowErrorsIfAny(result);
 
                 ret = result.CompiledAssembly.GetType(string.Format("{0}.{1}", nameSpace, className));
             }
-
             return ret;
+        }
+
+        private void ThrowErrorsIfAny(CompilerResults result)
+        {
+            if (result.Errors.Count > 0)
+            {
+                throw new Exception("Error while compiling: " + string.Join(". ", result.Errors.Cast<CompilerError>().Select(x => x.ErrorText)));
+            }
         }
 
         private string[] GatherReferences(Type configReaderBaseType)
         {
             var knownReferences = new[] { "System.Xml.dll", "System.dll", "System.Core.dll", "System.Configuration.dll" };
-
             var baseExistingRefs = configReaderBaseType.Assembly.GetReferencedAssemblies().Select(x => x.FullName).ToArray();
+
             var rawAssemblyList = ExtractDllLocations(baseExistingRefs).ToList();
             rawAssemblyList.AddRange(ExtractDllLocations(knownReferences));
             rawAssemblyList.Add(configReaderBaseType.Assembly.Location);
@@ -70,7 +71,7 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem
 
             foreach (var al in assemList)
             {
-                if (!result.Any(x => x.ToUpperInvariant() == al.ToUpperInvariant()) && !result.Any(x => new FileInfo(x).Name == new FileInfo(al).Name))
+                if (!result.Any(x => x.ToUpperInvariant() == al.ToUpperInvariant()) && !result.Any(x => new FileInfo(x).Name.ToUpperInvariant() == new FileInfo(al).Name.ToUpperInvariant()))
                 {
                     result.Add(al);
                 }
