@@ -24,7 +24,7 @@ Before:
         <section name="sitecore" type="Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel"/>
         ...
       </configSections>
-	  <sitecore /> <!--This is actually from Sitecore.config-->
+      <sitecore /> <!--This is actually from Sitecore.config-->
       ...
     </configuration>
 
@@ -35,7 +35,7 @@ After:
         <section name="sitecore" type="PING.Feature.SitecoreConfigurationOverrideSystem.PingSitecoreConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem"/>
         ...
       </configSections>
-	  <sitecore configReaderBaseType="Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel"/> <!--This is actually from Sitecore.config-->
+      <sitecore configReaderBaseType="Sitecore.Configuration.RuleBasedConfigReader, Sitecore.Kernel"/> <!--This is actually from Sitecore.config-->
       ...
     </configuration>
 
@@ -48,7 +48,7 @@ Before:
         <section name="sitecore" type="Sitecore.Configuration.ConfigReader, Sitecore.Kernel"/>
         ...
       </configSections>
-	  <sitecore /> <!--This is actually from Sitecore.config-->
+      <sitecore /> <!--This is actually from Sitecore.config-->
       ...
     </configuration>
 
@@ -59,7 +59,7 @@ After:
         <section name="sitecore" type="PING.Feature.SitecoreConfigurationOverrideSystem.PingSitecoreConfigReader, PING.Feature.SitecoreConfigurationOverrideSystem"/>
         ...
       </configSections>
-	  <sitecore configReaderBaseType="Sitecore.Configuration.ConfigReader, Sitecore.Kernel"/> <!--This is actually from Sitecore.config-->
+      <sitecore configReaderBaseType="Sitecore.Configuration.ConfigReader, Sitecore.Kernel"/> <!--This is actually from Sitecore.config-->
       ...
     </configuration>
 
@@ -84,7 +84,7 @@ Setup:
 
     <configuration>
       <appSettings>
-      	<add key="SitecoreSetting.Analytics.Robots.IgnoreRobots" value="false" />
+        <add key="SitecoreSetting.Analytics.Robots.IgnoreRobots" value="false" />
       </appSettings>
     </configuration>
 
@@ -101,10 +101,10 @@ After:
 
 Before:
   
-	<sitecore>
-		<sc.variable name="datafolder" value="somepath"/>
-		...
-	</sitecore>
+    <sitecore>
+        <sc.variable name="datafolder" value="somepath"/>
+        ...
+    </sitecore>
   
 Setup:
   
@@ -116,10 +116,10 @@ Setup:
 
 After:
   
-	<sitecore>
-		<sc.variable name="datafolder" value="new path value"/>
-		...
-	</sitecore>
+    <sitecore>
+        <sc.variable name="datafolder" value="new path value"/>
+        ...
+    </sitecore>
     
 #### Add, Update or Remove in Sitecore configruation using xPath
 
@@ -140,9 +140,9 @@ Before:
 
     <sitecore>
       <settings>
-		<setting name="AliasesActive" value="true" />
-		...
-		<setting name="ContentSearch.DateFormat" value="yyyy-MM-dd'T'HH:mm:ss'Z'" />
+        <setting name="AliasesActive" value="true" />
+        ...
+        <setting name="ContentSearch.DateFormat" value="yyyy-MM-dd'T'HH:mm:ss'Z'" />
       </settings>
     </sitecore>
 
@@ -159,10 +159,10 @@ After:
 
     <sitecore>
       <settings>
-		<setting name="AliasesActive" value="true" />
-		...
-		<setting name="ContentSearch.DateFormat" value="yyyy-MM-dd'T'HH:mm:ss'Z'" />
-		<setting name="patchAddValue" value="patchAddOverrideValue" />
+        <setting name="AliasesActive" value="true" />
+        ...
+        <setting name="ContentSearch.DateFormat" value="yyyy-MM-dd'T'HH:mm:ss'Z'" />
+        <setting name="patchAddValue" value="patchAddOverrideValue" />
       </settings>
     </sitecore>
     
@@ -174,17 +174,17 @@ This updates either the text value or attribute value of the node that matches t
 
 Before:
 
-	<sitecore>
-		<xpathtest>
-			<TestObject3 type="PING.Feature.SitecoreConfigurationOverrideSystem.Test.TestObject, PING.Feature.SitecoreConfigurationOverrideSystem.Test">
-				<param name="ctorProp1">I should be overwritten</param>
-				<param name="ctorProp2">$(databaseType)</param>
-				<param name="to2" ref="xpathtest/TestObject4" param1="some1" param2="some2"></param>
-				<Property1>prop1</Property1>
-				<Property2>prop2</Property2>
-			</TestObject3>
-		</xpathtest>
-	</sitecore>
+    <sitecore>
+        <xpathtest>
+            <TestObject3 type="PING.Feature.SitecoreConfigurationOverrideSystem.Test.TestObject, PING.Feature.SitecoreConfigurationOverrideSystem.Test">
+                <param name="ctorProp1">I should be overwritten</param>
+                <param name="ctorProp2">$(databaseType)</param>
+                <param name="to2" ref="xpathtest/TestObject4" param1="some1" param2="some2"></param>
+                <Property1>prop1</Property1>
+                <Property2>prop2</Property2>
+            </TestObject3>
+        </xpathtest>
+    </sitecore>
 
 Setup:
 
@@ -193,17 +193,17 @@ Setup:
 
 After:
 
-	<sitecore>
-		<xpathtest>
-			<TestObject3 type="PING.Feature.SitecoreConfigurationOverrideSystem.Test.TestObject, PING.Feature.SitecoreConfigurationOverrideSystem.Test">
-				<param name="ctorProp1">patchUpdatenOverrideValue</param>
-				<param name="ctorProp2">$(databaseType)</param>
-				<param name="to2" ref="xpathtest/TestObject4" param1="some1" param2="some2"></param>
-				<Property1>prop1</Property1>
-				<Property2>prop2</Property2>
-			</TestObject3>
-		</xpathtest>
-	</sitecore>
+    <sitecore>
+        <xpathtest>
+            <TestObject3 type="PING.Feature.SitecoreConfigurationOverrideSystem.Test.TestObject, PING.Feature.SitecoreConfigurationOverrideSystem.Test">
+                <param name="ctorProp1">patchUpdatenOverrideValue</param>
+                <param name="ctorProp2">$(databaseType)</param>
+                <param name="to2" ref="xpathtest/TestObject4" param1="some1" param2="some2"></param>
+                <Property1>prop1</Property1>
+                <Property2>prop2</Property2>
+            </TestObject3>
+        </xpathtest>
+    </sitecore>
 
 Note: patchUpdatenOverrideValue can be text or valid xml
     
@@ -211,17 +211,17 @@ Note: patchUpdatenOverrideValue can be text or valid xml
 
 Before:
 
-	<sitecore>
-		<xpathtest>
-			<TestObject3 type="PING.Feature.SitecoreConfigurationOverrideSystem.Test.TestObject, PING.Feature.SitecoreConfigurationOverrideSystem.Test">
-				<param name="ctorProp1">I should be overwritten</param>
-				<param name="ctorProp2">$(databaseType)</param>
-				<param name="to2" ref="xpathtest/TestObject4" param1="some1" param2="some2"></param>
-				<Property1>prop1</Property1>
-				<Property2>prop2</Property2>
-			</TestObject3>
-		</xpathtest>
-	</sitecore>
+    <sitecore>
+        <xpathtest>
+            <TestObject3 type="PING.Feature.SitecoreConfigurationOverrideSystem.Test.TestObject, PING.Feature.SitecoreConfigurationOverrideSystem.Test">
+                <param name="ctorProp1">I should be overwritten</param>
+                <param name="ctorProp2">$(databaseType)</param>
+                <param name="to2" ref="xpathtest/TestObject4" param1="some1" param2="some2"></param>
+                <Property1>prop1</Property1>
+                <Property2>prop2</Property2>
+            </TestObject3>
+        </xpathtest>
+    </sitecore>
 
 Setup:
 
@@ -230,17 +230,17 @@ Setup:
 
 After:
 
-	<sitecore>
-		<xpathtest>
-			<TestObject3 type="PING.Feature.SitecoreConfigurationOverrideSystem.Test.TestObject, PING.Feature.SitecoreConfigurationOverrideSystem.Test">
-				<param name="ctorProp1">I should be overwritten</param>
-				<param name="ctorProp2">$(databaseType)</param>
-				<param name="to2" ref="xpathtest/TestObject4" param1="patchUpdatenAttributeOverrideValue" param2="some2"></param>
-				<Property1>prop1</Property1>
-				<Property2>prop2</Property2>
-			</TestObject3>
-		</xpathtest>
-	</sitecore>
+    <sitecore>
+        <xpathtest>
+            <TestObject3 type="PING.Feature.SitecoreConfigurationOverrideSystem.Test.TestObject, PING.Feature.SitecoreConfigurationOverrideSystem.Test">
+                <param name="ctorProp1">I should be overwritten</param>
+                <param name="ctorProp2">$(databaseType)</param>
+                <param name="to2" ref="xpathtest/TestObject4" param1="patchUpdatenAttributeOverrideValue" param2="some2"></param>
+                <Property1>prop1</Property1>
+                <Property2>prop2</Property2>
+            </TestObject3>
+        </xpathtest>
+    </sitecore>
 
 ##### Remove
 
@@ -248,16 +248,16 @@ This will remove the node that matches the xPath selector
 
 Before:
 
-	<sitecore>
-		<xpathtest>
-			<TestObject4 type="PING.Feature.SitecoreConfigurationOverrideSystem.Test.TestObject2, PING.Feature.SitecoreConfigurationOverrideSystem.Test">
-				<param name="ctorProp1">$(1)</param>
-				<param name="ctorProp2">something_123</param>
-				<Property1>prop3</Property1>
-				<Property2>prop4</Property2>
-			</TestObject4>
-		</xpathtest>
-	</sitecore>
+    <sitecore>
+        <xpathtest>
+            <TestObject4 type="PING.Feature.SitecoreConfigurationOverrideSystem.Test.TestObject2, PING.Feature.SitecoreConfigurationOverrideSystem.Test">
+                <param name="ctorProp1">$(1)</param>
+                <param name="ctorProp2">something_123</param>
+                <Property1>prop3</Property1>
+                <Property2>prop4</Property2>
+            </TestObject4>
+        </xpathtest>
+    </sitecore>
 
 Setup:
 
@@ -266,23 +266,23 @@ Setup:
     
 After:
 
-	<sitecore>
-		<xpathtest>
-			<TestObject4 type="PING.Feature.SitecoreConfigurationOverrideSystem.Test.TestObject2, PING.Feature.SitecoreConfigurationOverrideSystem.Test">
-				<param name="ctorProp1">$(1)</param>
-				<param name="ctorProp2">something_123</param>
-				<Property1>prop3</Property1>
-			</TestObject4>
-		</xpathtest>
-	</sitecore>
+    <sitecore>
+        <xpathtest>
+            <TestObject4 type="PING.Feature.SitecoreConfigurationOverrideSystem.Test.TestObject2, PING.Feature.SitecoreConfigurationOverrideSystem.Test">
+                <param name="ctorProp1">$(1)</param>
+                <param name="ctorProp2">something_123</param>
+                <Property1>prop3</Property1>
+            </TestObject4>
+        </xpathtest>
+    </sitecore>
 
 ### Troubleshoot
 
 In /sitecore/admin/showconfig.aspx, all settings that are being overwritten are marked with source="Runtime Override" attribute in the xml node. For example:
 
-	<sitecore xmlns:patch="http://www.sitecore.net/xmlconfig/" database="SqlServer" configReaderBaseType="Sitecore.Configuration.ConfigReader, Sitecore.Kernel">
-		<sc.variable name="dataFolder" patch:source="zzDataFolder.config" value="D:\home\site\wwwroot\App_Data"/>
-		<sc.variable name="mediaFolder" value="/upload"/>
-		<sc.variable name="tempFolder" value="/overridevaluehere" source="Runtime Override"/>
-		...
-	</sitecore>
+    <sitecore xmlns:patch="http://www.sitecore.net/xmlconfig/" database="SqlServer" configReaderBaseType="Sitecore.Configuration.ConfigReader, Sitecore.Kernel">
+        <sc.variable name="dataFolder" patch:source="zzDataFolder.config" value="D:\home\site\wwwroot\App_Data"/>
+        <sc.variable name="mediaFolder" value="/upload"/>
+        <sc.variable name="tempFolder" value="/overridevaluehere" source="Runtime Override"/>
+        ...
+    </sitecore>

@@ -20,7 +20,7 @@ namespace PING.Feature.SitecoreConfigurationOverrideSystem.Test
             var typeResult = _pingSitecoreConfigReader.Create(null, null, sitecoreNode);
 
             Assert.IsNotNull(typeResult);
-            Assert.AreEqual("PING.Feature.SitecoreConfigurationOverrideSystemMirrorDimension.PingSitecoreConfigReader", typeResult.GetType().FullName);
+            Assert.AreEqual( "PING.Feature.SitecoreConfigurationOverrideSystem.PingSitecoreConfigOverrideReader", typeResult.GetType().FullName);
         }
 
         [TestMethod]

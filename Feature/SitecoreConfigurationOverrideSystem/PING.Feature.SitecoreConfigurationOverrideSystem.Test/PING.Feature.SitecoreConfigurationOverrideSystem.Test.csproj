@@ -48,7 +48,6 @@
   <ItemGroup>
     <Compile Include="OverridableSettingsTest.cs" />
     <Compile Include="HandleErrorsTest.cs" />
-    <Compile Include="OverrideIncludeFielsSettingTest.cs" />
     <Compile Include="DynamicTypeTest.cs" />
     <Compile Include="OverrideSitecorePatchesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
