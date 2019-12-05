@@ -47,23 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PingSitecoreConfigReader.cs" />
-    <None Include="PingSitecoreConfigOverrideReaderTemplate.cs.disable" />
+    <None Include="PingSitecoreConfigOverrideReaderTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\PingSitecoreConfigOverrideReaderTemplate.txt" />
+    <EmbeddedResource Include="Resources\PingSitecoreConfigOverrideReaderTemplate.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

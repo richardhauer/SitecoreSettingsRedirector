@@ -1,15 +1,15 @@
-using Sitecore.Configuration;
+﻿using Sitecore.Configuration;
 using Sitecore.Diagnostics;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Xml;
 
-/* Note: Build Action of this file must be Embedded Resource */
-
+// This type is not being used in runtime directly, it's a build validation for the code template that's being used for creating types during runtime in PingSitecoreConfigOverrideReaderTemplate.txt
+// Note: Build Action is set to 'None' - this is just a helper
 namespace PING.Feature.SitecoreConfigurationOverrideSystem
 {
-	public class PingSitecoreConfigOverrideReader : $BaseTypeToken$
+	public class PingSitecoreConfigOverrideReader : ConfigReader // public class PingSitecoreConfigOverrideReader : $BaseTypeToken
 	{
 		private const string SettingPrefixKey = "SitecoreSetting.";
 		private const string SitecoreSettingXpathTemplate = "/sitecore/settings/setting[@name='{0}']";
